@@ -1,0 +1,44 @@
+services:
+  frontend:
+    container_name: frontend
+    build: ./mern/frontend
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    networks:
+      - mern
+
+  backend: 
+    container_name: backend
+    build: ./mern/backend
+    ports:
+      - "5050:5050"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+    restart: unless-stopped
+
+    networks:
+      - mern
+    depends_on:
+      - mongo
+  
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+    networks:
+      - mern
+    volumes:
+      - mongo-data:/data/db
+
+
+networks:
+  mern:
+    driver: bridge
+
+volumes:
+  mongo-data:
+
+    
